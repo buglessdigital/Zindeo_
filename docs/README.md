@@ -20,9 +20,9 @@ Durum: ✅ hazır · 📝 taslak · ⏳ hazırlanacak
 | | Design system | ⏳ |
 | **03 Mimari** | [Mimari dokümanı (C4)](03-architecture/architecture.md) | 📝 |
 | | [ADR'ler — Mimari karar kayıtları](03-architecture/adr/) | 📝 3 kayıt |
-| **04 Veri** | Veri modeli / ERD | ⏳ |
-| | Beslenme hesaplama spesifikasyonu | ⏳ |
-| | Yemek taksonomisi | ⏳ |
+| **04 Veri** | [Veri modeli / ERD](04-data/erd.md) | 📝 |
+| | [Beslenme hesaplama spesifikasyonu](04-data/nutrition-calculation.md) | 📝 |
+| | [Yemek taksonomisi](04-data/food-taxonomy.md) | 📝 |
 | **05 API** | OpenAPI spesifikasyonu | ⏳ |
 | **06 ML** | ML Design Doc | ⏳ |
 | | Veri toplama ve etiketleme kılavuzu | ⏳ |
