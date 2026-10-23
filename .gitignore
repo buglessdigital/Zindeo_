@@ -1,0 +1,43 @@
+# macOS
+.DS_Store
+
+# Office lock files
+~$*
+
+# Editors
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Node / Expo
+node_modules/
+.expo/
+dist/
+web-build/
+*.tsbuildinfo
+
+# Native build outputs (Expo prebuild)
+ios/
+android/
+
+# Supabase local
+supabase/.branches/
+supabase/.temp/
+
+# Python / ML
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
+ml/data/
+ml/checkpoints/
+ml/runs/
+*.pt
+*.pth
+*.onnx
+*.tflite
