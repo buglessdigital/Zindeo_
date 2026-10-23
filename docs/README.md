@@ -18,7 +18,7 @@ Durum: ✅ hazır · 📝 taslak · ⏳ hazırlanacak
 | **02 Tasarım** | Bilgi mimarisi ve ekran haritası | ⏳ |
 | | Kullanıcı akışları | ⏳ |
 | | Design system | ⏳ |
-| **03 Mimari** | Mimari dokümanı (C4) | ⏳ |
+| **03 Mimari** | [Mimari dokümanı (C4)](03-architecture/architecture.md) | 📝 |
 | | [ADR'ler — Mimari karar kayıtları](03-architecture/adr/) | 📝 3 kayıt |
 | **04 Veri** | Veri modeli / ERD | ⏳ |
 | | Beslenme hesaplama spesifikasyonu | ⏳ |
@@ -38,4 +38,5 @@ Durum: ✅ hazır · 📝 taslak · ⏳ hazırlanacak
 
 1. [Product Vision](01-product/vision.md): ne yapıyoruz ve neden
 2. [PRD](01-product/prd.md): tam olarak ne yapacağız
-3. Mimari dokümanı: nasıl yapacağız *(hazırlanacak)*
+3. [Mimari dokümanı](03-architecture/architecture.md): nasıl yapacağız
+4. [ADR'ler](03-architecture/adr/): neden böyle yaptık
