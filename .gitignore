@@ -43,4 +43,5 @@ ml/runs/
 *.tflite
 
 # Course materials downloaded from Moodle (large, third-party)
-docs/moodle/
+docs/moodle/*
+!docs/moodle/ready-deliverables/

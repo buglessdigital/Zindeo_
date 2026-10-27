@@ -1,4 +1,4 @@
-// Generates docs/course/Zindeo-RSD-1.0.docx
+// Generates docs/moodle/ready-deliverables/Zindeo-RSD-1.0.docx
 // Usage: NODE_PATH=<dir containing node_modules with docx@9> node rsd-1.0.js <output.docx>
 const fs = require("fs");
 const {
