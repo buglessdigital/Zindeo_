@@ -41,3 +41,6 @@ ml/runs/
 *.pth
 *.onnx
 *.tflite
+
+# Course materials downloaded from Moodle (large, third-party)
+docs/moodle/
