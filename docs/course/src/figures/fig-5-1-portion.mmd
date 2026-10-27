@@ -1,0 +1,11 @@
+flowchart TB
+    photo["Meal photo"] --> plate{"Plate<br/>detected?"}
+    plate -- "no" --> def["Use the default portion<br/>of each food and inform the user"]
+    plate -- "yes" --> scale["Scale from plate diameter<br/>(≈ 26 cm) → cm per pixel"]
+    photo --> seg["Segment the region<br/>of each food item"]
+    scale --> area["Real area of each food (cm²)"]
+    seg --> area
+    area --> grams["Weight (g) = area × food-specific g/cm²<br/><i>(measured by weighing reference portions)</i>"]
+    grams --> kcal["Energy and nutrients =<br/>catalogue value per 100 g × weight / 100"]
+    def --> kcal
+    kcal --> adjust(["User can adjust the weight"])

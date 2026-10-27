@@ -1,0 +1,8 @@
+{
+  "theme": "neutral",
+  "themeVariables": {
+    "fontFamily": "Times New Roman, Times, serif",
+    "fontSize": "17px"
+  },
+  "flowchart": { "htmlLabels": true, "curve": "basis", "nodeSpacing": 35, "rankSpacing": 50, "wrappingWidth": 260 }
+}

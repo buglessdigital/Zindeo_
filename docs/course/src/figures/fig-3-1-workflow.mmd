@@ -1,0 +1,22 @@
+flowchart LR
+    subgraph cur["(a) Current practice: manual logging"]
+        direction TB
+        c1["Open the app,<br/>select the meal"] --> c2["Type the food name"]
+        c2 --> c3["Choose among many<br/>similar entries"]
+        c3 --> c4["Guess the amount<br/>in grams"]
+        c4 --> c5{"More items<br/>on the plate?"}
+        c5 -- "yes, repeat" --> c2
+        c5 -- "no" --> c6(["Save"])
+    end
+
+    subgraph zin["(b) Zindeo: photo logging"]
+        direction TB
+        z1["Open the app,<br/>take one photo"] --> z2["All items recognized,<br/>weights estimated"]
+        z2 --> z3{"Confident?"}
+        z3 -- "no" --> z4["Pick from 2–3<br/>alternatives"]
+        z3 -- "yes" --> z5["Confirm or<br/>adjust weights"]
+        z4 --> z5
+        z5 --> z6(["Save: calories from<br/>Zindeo catalogue"])
+    end
+
+    cur ~~~ zin

@@ -1,0 +1,17 @@
+flowchart LR
+    photo["Meal photo"] --> rec
+
+    subgraph rec["Recognition engine (single interface)"]
+        direction TB
+        cloud["<b>Phase 1</b><br/>Cloud vision-language model<br/>via Zindeo backend"]
+        ondev["<b>Phase 2</b><br/>Zindeo on-device model<br/>(cloud model as fallback)"]
+    end
+
+    rec -- "candidate foods<br/>+ weights" --> review["User confirms<br/>or corrects"]
+    review --> calc["Calories from the<br/>Zindeo food catalogue"]
+    calc --> logged(["Meal logged"])
+
+    review -- "labelled photo<br/>(only with consent)" --> data[("Turkish food<br/>dataset")]
+    public[("Public datasets and<br/>team photos")] --> data
+    data --> train["Training and evaluation<br/>with PyTorch"]
+    train -- "Phase 2 model" --> ondev

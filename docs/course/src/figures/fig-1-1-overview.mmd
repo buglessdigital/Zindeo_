@@ -1,0 +1,36 @@
+flowchart LR
+    user(["User"])
+
+    subgraph phone["User's phone"]
+        direction TB
+        app["<b>Zindeo mobile app</b><br/>iOS and Android"]
+        model["On-device recognition<br/>model <i>(Phase 2)</i>"]
+        app -.-> model
+    end
+
+    subgraph backend["Zindeo backend"]
+        direction TB
+        auth["Authentication"]
+        fn["Server functions<br/>recognition · quota · purchases"]
+        db[("Food catalogue<br/>and user data")]
+        storage[("Photo storage<br/><i>(only with consent)</i>")]
+    end
+
+    subgraph ext["External services"]
+        direction TB
+        idp["Apple / Google sign-in"]
+        vlm["Cloud vision-language<br/>model <i>(Phase 1)</i>"]
+        stores["App Store / Google Play"]
+        off["Open Food Facts"]
+    end
+
+    user -- "photo · search<br/>· barcode" --> app
+    app --> auth
+    app --> fn
+    app --> db
+    fn --> db
+    fn --> storage
+    auth --> idp
+    fn --> vlm
+    fn --> stores
+    fn --> off

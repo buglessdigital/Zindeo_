@@ -4,8 +4,10 @@ const fs = require("fs");
 const {
   Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Table, TableRow, TableCell,
   WidthType, BorderStyle, ShadingType, LevelFormat, PageBreak, Footer, PageNumber,
-  TableOfContents, TabStopType,
+  TableOfContents, TabStopType, ImageRun,
 } = require("docx");
+const path = require("path");
+const FIG_DIR = path.join(__dirname, "figures");
 
 const FONT = "Times New Roman";
 const CONTENT_WIDTH = 11906 - 2 * 1134; // A4 minus 2 cm margins (DXA)
@@ -28,8 +30,17 @@ function runs(text, base = {}) {
 }
 const P = (text, opts = {}) =>
   new Paragraph({ children: runs(text), alignment: AlignmentType.JUSTIFIED, spacing: { after: 120, line: 288 }, ...opts });
-const H1 = (text) => new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun(text)], pageBreakBefore: true });
-const H2 = (text) => new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun(text)] });
+// Chapter / section tracking for automatic requirement table captions
+let chapter = 0, tableNo = 0, sectionTitle = "";
+const H1 = (text) => {
+  chapter = parseInt(text, 10);
+  tableNo = 0;
+  return new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun(text)], pageBreakBefore: true });
+};
+const H2 = (text) => {
+  sectionTitle = text.replace(/^[\d.]+\s*/, "");
+  return new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun(text)] });
+};
 const H3 = (text) => new Paragraph({ heading: HeadingLevel.HEADING_3, children: [new TextRun(text)] });
 const B = (text, level = 0) =>
   new Paragraph({ children: runs(text), numbering: { reference: "bullets", level }, spacing: { after: 60, line: 276 }, alignment: AlignmentType.JUSTIFIED });
@@ -65,11 +76,26 @@ function table(headers, rows, widths) {
   });
 }
 const caption = (text) => new Paragraph({ children: [new TextRun({ text, italics: true, size: 20 })], alignment: AlignmentType.CENTER, spacing: { before: 80, after: 200 } });
+// Numbered table caption within the current chapter, e.g. "Table 5.3. ..."
+const tcap = (text) => caption(`Table ${chapter}.${++tableNo}. ${text}`);
 const gap = () => new Paragraph({ children: [], spacing: { after: 120 } });
 
-// Requirement table: ID | Requirement | Priority
+// Figure from docs/course/src/figures/<file>, scaled to widthPx (96 dpi), with caption below
+function figure(file, widthPx, text) {
+  const data = fs.readFileSync(path.join(FIG_DIR, file));
+  const w = data.readUInt32BE(16), h = data.readUInt32BE(20); // PNG IHDR
+  return [
+    new Paragraph({
+      alignment: AlignmentType.CENTER, keepNext: true, spacing: { before: 200 },
+      children: [new ImageRun({ type: "png", data, transformation: { width: widthPx, height: Math.round(widthPx * h / w) }, altText: { title: text, description: text, name: file } })],
+    }),
+    caption(text),
+  ];
+}
+
+// Requirement table: ID | Requirement | Priority, captioned with the current section title
 const RW = [1000, 7138, 1500];
-const reqs = (rows) => [table(["ID", "Requirement", "Priority"], rows, RW), gap()];
+const reqs = (rows) => [table(["ID", "Requirement", "Priority"], rows, RW), tcap(`${sectionTitle} requirements`)];
 
 // ---------- content ----------
 const cover = [
@@ -113,7 +139,7 @@ const s1 = [
     "**Photo-based recognition in existing applications depends on the cloud.** It does not work without an internet connection, the user's photo leaves the phone, and every recognition request has a server cost that is reflected to users as a high subscription price.",
   ]),
   H2("1.3. Project Goals"),
-  P("Zindeo is a mobile calorie and nutrition tracking application for iOS and Android, targeting the Turkish market first. The goals of the project are:"),
+  P("Zindeo is a mobile calorie and nutrition tracking application for iOS and Android, targeting the Turkish market first. The goals of the project are listed in Table 1.1, and Figure 1.1 gives an overview of the system and the external services it uses."),
   table(["ID", "Goal"], [
     ["G1", "**Fast logging:** a meal can be logged in less than 10 seconds, by taking a photo or by searching."],
     ["G2", "**Accurate recognition of Turkish dishes:** a food recognition model trained on a Turkish food dataset collected and labelled by the team, covering at least 100 dishes."],
@@ -122,7 +148,8 @@ const s1 = [
     ["G5", "**On-device AI:** the recognition models run on the phone, without an internet connection and without a per-request server cost."],
     ["G6", "**A real product:** the application is published on the App Store and Google Play with a sustainable freemium business model."],
   ], [1000, 8638]),
-  gap(),
+  tcap("Goals of the project"),
+  ...figure("fig-1-1-overview.png", 640, "Figure 1.1. Overview of Zindeo and the external services it uses"),
   H2("1.4. Scope and Project Outputs"),
   P("The project is carried out over two semesters (COMP 4910 and COMP 4920). The scope is divided into two phases:"),
   B("**Phase 1 (first semester and early second semester):** the complete tracking application (accounts, goal setting, food database and search, meal logging, dashboard, weight tracking, subscriptions, privacy) with photo-based recognition provided by a cloud vision-language model called through the Zindeo backend. In parallel, the team collects and labels the Turkish food dataset."),
@@ -148,6 +175,8 @@ const s1 = [
   B("In Phase 1, a cloud vision-language model implements this interface through the Zindeo backend. In Phase 2, Zindeo's own on-device model implements it, and the cloud model may remain as a fallback when the on-device model is not confident."),
   B("**Calories and nutrients are never taken from the recognition engine.** They are always calculated from the Zindeo food catalogue using the recognized food and its weight. This keeps photo, search and barcode logging consistent and prevents “invented” nutrition values."),
   B("Every photo that the user confirms or corrects becomes a labelled training example, if the user has given explicit consent. Phase 1 therefore also serves as a data collection phase for Phase 2."),
+  P("Figure 1.2 summarises this strategy: the recognition engine changes between the phases, while the confirmation step, the calorie calculation and the data collection loop stay the same."),
+  ...figure("fig-1-2-two-phase.png", 640, "Figure 1.2. Two-phase recognition strategy and the data collection loop"),
 ];
 
 // 2. Existing Systems
@@ -155,6 +184,7 @@ const s2 = [
   H1("2. Existing Systems"),
   P("This section summarises the existing commercial applications and the academic work related to Zindeo. The full analysis, covering 10 applications and 32 papers, datasets and methods, is kept in the team's research spreadsheet [3]. Claims of companies (accuracy, number of downloads) are as published by the companies and have not been independently verified."),
   H2("2.1. Commercial Applications"),
+  P("Table 2.1 summarises ten applications that offer photo-based food recognition: seven global applications and three applications from Türkiye."),
   table(["Application", "Market", "Photo recognition and portion estimation", "Limitation with respect to Zindeo"], [
     ["FatSecret", "Global", "Photo is sent to the company's cloud API; dishes and portions are matched with a large nutrition database.", "Cloud only. In our test, karnıyarık was recognized as “etli yufka”."],
     ["MyFitnessPal (Meal Scan)", "Global", "Premium feature; recognizes multiple foods with the camera. Automatic weight estimation is reported as under development.", "Paid feature; no specific work on Turkish dishes."],
@@ -167,7 +197,7 @@ const s2 = [
     ["Neyedim", "Türkiye", "Focused on Turkish cuisine; user corrects the amount in grams or ml.", "iOS only; no automatic weight estimation method published; dataset and accuracy not published."],
     ["Kalorita", "Türkiye", "Trained with Turkish dishes; user places a finger next to the plate as a size reference.", "iOS and Turkish only; requires an extra reference object; dataset and accuracy not published."],
   ], [1700, 1000, 3638, 3300]),
-  caption("Table 2.1. Existing commercial applications with photo-based food recognition"),
+  tcap("Existing commercial applications with photo-based food recognition"),
   P("Two observations are important for Zindeo. First, none of the examined applications states that its recognition model runs on the phone without an internet connection; in the known cases, the photo is sent to a server. Second, the applications focusing on Turkish food (Neyedim, Kalorita) are available only on iOS and do not publish their datasets or accuracy results."),
   H2("2.2. Academic Work and Datasets"),
   B("**Turkish food recognition.** The first Turkish food benchmark, TurkishFoods-15, contains 15 dishes and 7,411 images [4]. TurkishFoods-25 extends it to 25 dishes and about 11,500 images and was used in a mobile classification application with 93% accuracy, without portion estimation [5]. The closest recent work recognizes 40 Turkish dishes with 93.5% accuracy using a large model (EfficientNetV2-L) and falls back to a cloud model (Gemini) when uncertain, reporting a mean absolute portion weight error of 18.4 g [6]. Large general-purpose vision-language models reach only about 77% weighted F1 on the 25 Turkish dishes without training and do not fit on a phone [7]."),
@@ -176,6 +206,7 @@ const s2 = [
   B("**Application evaluation.** A comparative study of 18 nutrition applications found that AI-enabled applications have large errors on mixed and non-Western dishes, for example overestimating the energy of pho by 49% [13]. Turkish cuisine consists largely of mixed dishes (stews, dolma, casseroles), which supports the motivation of this project."),
   B("**Mobile deployment.** Mobile-friendly architectures (EfficientNet, MobileNetV3) [14], [15], confidence calibration with temperature scaling [16] and 8-bit quantization [17] are the main methods for an accurate, small and fast on-device model."),
   H2("2.3. Gap Analysis and Differentiation of Zindeo"),
+  P("Table 2.2 matches each gap identified in the existing systems with the approach of Zindeo."),
   table(["Gap in existing systems", "Zindeo's approach"], [
     ["Recognition depends on the cloud", "Own model runs on the device; works offline; no per-request cost; photo stays on the phone (Phase 2)."],
     ["Turkish home dishes are poorly recognized", "Turkish food dataset of at least 100 dishes, trained and evaluated specifically on Turkish cuisine."],
@@ -184,7 +215,7 @@ const s2 = [
     ["Turkish-focused applications are iOS only", "iOS and Android from the first release."],
     ["The model is confidently wrong", "Calibrated confidence; when uncertain, the user is offered 2–3 alternatives."],
   ], [4300, 5338]),
-  caption("Table 2.2. Gaps in existing systems and how Zindeo addresses them"),
+  tcap("Gaps in existing systems and how Zindeo addresses them"),
 ];
 
 // 3. Current practice
@@ -204,6 +235,7 @@ const s3 = [
   H2("3.3. Logging a Meal with a Photo in Existing Applications"),
   P("In applications that support photo logging, the user takes a photo, which is uploaded to the company's server. The server returns the recognized foods and estimated amounts; the user corrects them and saves. This is faster than manual logging, but requires an internet connection, is often limited to paid subscriptions, and is weak on Turkish dishes and on mixed dishes."),
   H2("3.4. Problems in the Current Practice"),
+  P("Table 3.1 lists the problems observed in the current practice. Each problem is referenced in the proposed workflow below."),
   table(["ID", "Problem"], [
     ["P1", "Manual logging takes too long; users stop tracking after a few weeks."],
     ["P2", "Turkish dishes are missing from databases or have inconsistent, user-generated values."],
@@ -213,7 +245,7 @@ const s3 = [
     ["P6", "Unsafe goals (very low calorie targets, very fast weight loss) are possible."],
     ["P7", "Health data is processed without clear consent; users do not know how their photos are used."],
   ], [1000, 8638]),
-  gap(),
+  tcap("Problems in the current practice of calorie tracking"),
   H2("3.5. The Proposed Zindeo Workflow"),
   ...N([
     "The user completes a short onboarding; Zindeo calculates safe daily calorie and macro targets (addresses P6).",
@@ -224,12 +256,14 @@ const s3 = [
     "The user confirms or corrects the result and saves it, usually in a few seconds. In Phase 2, all of this works on the phone, offline (addresses P5).",
     "The user decides explicitly whether the photo may be used to improve the model (addresses P7).",
   ]),
+  P("Figure 3.1 compares the manual logging workflow with the photo logging workflow of Zindeo."),
+  ...figure("fig-3-1-workflow.png", 500, "Figure 3.1. (a) Manual logging in the current practice and (b) photo logging in Zindeo"),
 ];
 
 // 4. Actors
 const s4 = [
   H1("4. Actors"),
-  P("The following actors interact with Zindeo. The use cases of each actor will be modelled in RSD Revision 2.0."),
+  P("The actors that interact with Zindeo are listed in Table 4.1. The use cases of each actor will be modelled in RSD Revision 2.0."),
   table(["Actor", "Type", "Description"], [
     ["Guest", "Human", "A person who has installed the application but has not registered. Can view the introduction screens and register or sign in."],
     ["User (Free User)", "Human", "A registered user. Sets goals, logs meals by search, photo and barcode, tracks weight and progress, manages privacy settings. Has a limited number of photo recognitions per day."],
@@ -242,7 +276,7 @@ const s4 = [
     ["Notification Service", "System", "Delivers push notifications to the user's device."],
     ["Scheduler (Time)", "System", "Triggers time-based events: reminders, daily quota reset, target recalculation on birthdays."],
   ], [2400, 1100, 6138]),
-  caption("Table 4.1. Actors of Zindeo"),
+  tcap("Actors of Zindeo"),
 ];
 
 // 5. Functional requirements
@@ -253,7 +287,7 @@ const s5 = [
   B("**Should:** planned for the first release; may move to the next update if time does not allow."),
   B("**Could:** desirable; planned after the first release."),
   B("**Phase 2:** planned for the second semester."),
-  P("In this document, “the system” refers to the Zindeo mobile application together with its backend."),
+  P("In this document, “the system” refers to the Zindeo mobile application together with its backend. The requirements of each subsystem are listed in Tables 5.1–5.16."),
 
   H2("5.1. User Account Management"),
   ...reqs([
@@ -320,6 +354,8 @@ const s5 = [
   ]),
 
   H2("5.6. Portion Size Estimation"),
+  P("Figure 5.1 shows the portion estimation method planned for Phase 2, which uses the plate as the size reference. The corresponding requirements are FR-6.3 to FR-6.6."),
+  ...figure("fig-5-1-portion.png", 400, "Figure 5.1. Plate-referenced portion estimation (Phase 2)"),
   ...reqs([
     ["FR-6.1", "The system shall provide an estimated weight in grams for each recognized food item from a single photo. In Phase 1, the estimate is provided by the cloud recognition service.", "Must"],
     ["FR-6.2", "The user shall always be able to adjust the estimated weight with a slider or with portion units.", "Must"],
@@ -425,7 +461,7 @@ const s5 = [
 // 6. Data requirements
 const s6 = [
   H1("6. Data Requirements"),
-  P("This section describes the main information that Zindeo stores. These entities will be the basis of the class diagrams in RSD Revision 2.0."),
+  P("Table 6.1 describes the main information that Zindeo stores. These entities will be the basis of the class diagrams in RSD Revision 2.0."),
   table(["Entity", "Description", "Main attributes"], [
     ["User Profile", "Personal and body data of a registered user.", "sex, date of birth, height, activity level, goal, target weight, weekly rate, unit system, language, time zone"],
     ["Nutrition Target", "Daily targets valid from a given date; a new record is created at each recalculation.", "effective date, energy, protein, carbohydrate, fat, BMR, TDEE, calculation method version"],
@@ -444,7 +480,7 @@ const s6 = [
     ["Subscription", "A store subscription of a user.", "platform, product, status, expiry date, original transaction ID"],
     ["Consent", "A consent decision of a user; records are only added, never changed.", "type (health data, training photos, marketing), text version, granted or withdrawn, time"],
   ], [2000, 3500, 4138]),
-  caption("Table 6.1. Main data entities"),
+  tcap("Main data entities"),
   P("The following rules apply to the data:"),
   B("Nutrition values in the catalogue are stored per 100 g of edible portion. Energy (kcal), protein, carbohydrate and fat are mandatory."),
   B("The source of each nutrition value is recorded. The priority of sources is: TürKomp, the Turkish national food composition database [20]; USDA FoodData Central [21]; Zindeo standard recipes; product labels and Open Food Facts [22]; user input (only for the user's own foods)."),
@@ -469,6 +505,7 @@ const s7 = [
 // 8. Non-functional
 const s8 = [
   H1("8. Non-Functional Requirements"),
+  P("The non-functional requirements are grouped by quality attribute in Tables 8.1–8.10, using the same priorities as in Section 5."),
   H2("8.1. Performance"),
   ...reqs([
     ["NFR-1", "The application shall be usable within 2 seconds after a cold start on a mid-range phone.", "Must"],
@@ -560,6 +597,7 @@ const s9 = [
 // 10. Glossary
 const s10 = [
   H1("10. Glossary"),
+  P("Table 10.1 defines the terms used in this document."),
   table(["Term", "Definition"], [
     ["BMR", "Basal Metabolic Rate: the energy the body uses at rest per day."],
     ["TDEE", "Total Daily Energy Expenditure: BMR multiplied by an activity factor."],
@@ -581,6 +619,7 @@ const s10 = [
     ["KVKK", "Kişisel Verilerin Korunması Kanunu, Turkish Personal Data Protection Law No. 6698."],
     ["Phase 1 / Phase 2", "The development phases of Zindeo, described in Section 1.4."],
   ], [2600, 7038]),
+  tcap("Glossary of terms"),
 ];
 
 // 11. References
