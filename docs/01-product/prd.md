@@ -62,7 +62,7 @@ Gereksinim ID formatı: `<EPIC>-<numara>` (ör. `LOG-03`). Bu ID'ler backlog, ko
 | AUTH-05 | Kullanıcı olarak hesabımı ve tüm verimi uygulama içinden kalıcı olarak silebilmek istiyorum. | M |
 
 **Kabul kriterleri**
-- AUTH-01: iOS'ta başka bir sosyal giriş seçeneği sunulduğu için Apple ile giriş zorunludur (App Store Review Guideline 4.8).
+- AUTH-01: App Store Review Guideline 4.8, Google gibi üçüncü taraf bir giriş sunan uygulamaların gizlilik odaklı eşdeğer bir giriş seçeneği de sunmasını ister. Apple ile giriş bu koşulu karşılar; ürün kararı olarak sunuyoruz.
 - AUTH-05: Hesap silme, App Store ve Google Play kurallarına uygun olarak uygulama içinden yapılabilmelidir. Silme işlemi sunucudaki kişisel veriyi, fotoğrafları ve analitik kimliği kapsar.
 
 ### 4.2 `ONB` — Onboarding ve hedef belirleme

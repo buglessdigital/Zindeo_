@@ -129,7 +129,7 @@ const toc = [
 const s1 = [
   H1("1. Introduction"),
   H2("1.1. Purpose of This Document"),
-  P("This Requirements Specifications Document (RSD) refines the problem definition given in the Project Assignment Form (PAF) of Zindeo. Revision 1.0 describes the requirements in textual form: the problem, the existing systems, the current practice of calorie tracking, the actors, and the functional, data, behavioral and non-functional requirements of the system. Revision 2.0 will model the same requirements in UML (use case, activity, class and state diagrams). The requirement identifiers introduced in this document (e.g. FR-5.4, NFR-3) will be kept unchanged in later revisions so that every UML model element can be traced back to a requirement."),
+  P("This Requirements Specifications Document (RSD) refines the problem definition given in the Project Assignment Form (PAF) of Zindeo. Revision 1.0 describes the requirements in textual form: the problem, the existing systems, the current practice of calorie tracking, the actors, and the functional, data, behavioral and non-functional requirements of the system. Revision 2.0 will model the same requirements in UML (use case, activity, class and state diagrams), following the object-oriented requirements modelling approach of [1] and the requirements engineering practices described in [2]. The requirement identifiers introduced in this document (e.g. FR-5.4, NFR-3) will be kept unchanged in later revisions so that every UML model element can be traced back to a requirement."),
   H2("1.2. Problem Statement"),
   P("Calorie and nutrition tracking is one of the most effective self-management tools for people who want to lose, gain or maintain weight, and for people who exercise. However, most people who start tracking stop within a few weeks. Our analysis of existing applications and of the literature points to four main reasons:"),
   ...N([
@@ -445,7 +445,7 @@ const s5 = [
   H2("5.16. Machine Learning Development"),
   P("These requirements describe the work needed to produce Zindeo's own models. They are project requirements rather than end-user features, but they define deliverables that will be evaluated."),
   ...reqs([
-    ["FR-16.1", "The team shall build a labelled Turkish food image dataset covering at least 100 dishes, combining public datasets whose licences allow commercial use (e.g. TurkishFoods-25) with photos collected by the team and, with consent, by users. Datasets licensed for non-commercial research only shall be used for experiments only and shall not be used to train the product model.", "Must"],
+    ["FR-16.1", "The team shall build a labelled Turkish food image dataset covering at least 100 dishes, combining public datasets whose licences allow commercial use with photos collected by the team and, with consent, by users. Datasets licensed for non-commercial research only shall be used for experiments only and shall not be used to train the product model. The licence of each public dataset (e.g. TurkishFoods-25, whose public copy is a re-upload by a third party) shall be confirmed with its original authors before it is used for the product model.", "Must"],
     ["FR-16.2", "The team shall write a labelling guideline. Each image shall be labelled with catalogue codes; a subset shall include weighed portions (grams) for evaluating portion estimation.", "Must"],
     ["FR-16.3", "The team shall define a fixed, held-out test set of Turkish dishes, which shall not be used for training, and shall measure top-1 and top-3 accuracy and the energy estimation error on it.", "Must"],
     ["FR-16.4", "The team shall evaluate candidate cloud vision-language models on the test set and select the Phase 1 recognition service based on the results.", "Must"],
@@ -551,7 +551,7 @@ const s8 = [
     ["NFR-23", "Body weight, height and nutrition records may be regarded as health data, which is special category personal data under KVKK [19]; they shall be processed only with explicit consent and with additional security measures.", "Must"],
     ["NFR-24", "Since the Phase 1 recognition service may be located outside Türkiye, the transfer of photos abroad shall be evaluated under KVKK and disclosed to the user.", "Must"],
     ["NFR-25", "Data deletion requests shall be completed within 30 days.", "Must"],
-    ["NFR-26", "The application shall comply with the App Store Review Guidelines [23] and Google Play policies, including Sign in with Apple, in-app account deletion and in-app purchase for digital content.", "Must"],
+    ["NFR-26", "The application shall comply with the App Store Review Guidelines [23] and Google Play policies, including offering an equivalent privacy-focused login option alongside Google sign-in (Sign in with Apple, FR-1.1), in-app account deletion and in-app purchase for digital content.", "Must"],
     ["NFR-27", "The application shall provide a privacy policy, terms of use and a health disclaimer.", "Must"],
   ]),
   H2("8.8. Health, Safety and Ethics"),
@@ -627,7 +627,7 @@ const refs = [
   "S. Bennett, S. McRobb and R. Farmer, *Object-Oriented Systems Analysis and Design Using UML*, 4th ed. McGraw-Hill, 2010.",
   "R. S. Pressman, *Software Engineering: A Practitioner's Approach*, 7th ed. McGraw-Hill, 2010.",
   "Zindeo Team, “Zindeo – Competitor Analysis, Literature, Datasets and Method Sources,” internal research document, Oct. 20, 2026.",
-  "C. Güngör, F. Baltacı, A. Erdem and E. Erdem, “Turkish cuisine: A benchmark dataset with Turkish meals for food recognition,” in *Proc. 25th Signal Processing and Communications Applications Conf. (SIU)*, IEEE, 2017.",
+  "C. Güngör, F. Baltacı, İ. A. Erdem and M. E. Erdem, “Turkish cuisine: A benchmark dataset with Turkish meals for food recognition,” in *Proc. 25th Signal Processing and Communications Applications Conf. (SIU)*, IEEE, 2017.",
   "Ş. Kayıkçı, Y. Başol and E. Dörter, “Classification of Turkish cuisine with deep learning on mobile platform,” in *Proc. 4th Int. Conf. on Computer Science and Engineering (UBMK)*, IEEE, 2019.",
   "F. Göz et al., “A confidence-aware hybrid vision–language framework for food recognition and nutritional monitoring,” *Nutrients*, vol. 18, no. 15, 2026, doi: 10.3390/nu18152449.",
   "Y. S. Bıçakçı, “Performance comparison of multimodal vision-language models in classifying Turkish dishes,” *Sakarya University Journal of Computer and Information Sciences*, vol. 9, no. 1, 2026.",
