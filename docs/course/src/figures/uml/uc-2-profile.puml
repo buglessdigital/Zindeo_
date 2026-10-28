@@ -1,0 +1,26 @@
+@startuml
+!include style.iuml
+left to right direction
+actor User
+rectangle "UC-2 Profile and Goals" {
+  usecase "UC-2.1\nComplete Onboarding" as UC21
+  usecase "UC-2.3\nUpdate Profile and Goal" as UC23
+  usecase "UC-2.4\nOverride Targets Manually" as UC24
+  usecase "UC-2.2\nCalculate Nutrition Targets" as UC22
+  usecase "UC-7.1\nGive Health Data Consent" as UC71 #line.dashed
+  usecase "UC-5.4\nRecord Body Weight" as UC54 #line.dashed
+  usecase "UC-2.5\nSwitch to Maintenance Goal" as UC25
+}
+actor "Scheduler\n(Time)" as Time <<system>>
+User -- UC21
+User -- UC23
+User -- UC54
+UC21 ..> UC22 : <<include>>
+UC21 ..> UC71 : <<include>>
+UC23 ..> UC22 : <<include>>
+UC54 ..> UC22 : <<include>>
+UC23 <.. UC24 : <<extend>>
+UC54 <.. UC25 : <<extend>>\n(target weight reached)
+UC22 -- Time
+note right of Time : Triggers recalculation\non the user's birthday
+@enduml

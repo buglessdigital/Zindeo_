@@ -1,0 +1,17 @@
+@startuml
+!include style.iuml
+left to right direction
+actor User
+rectangle "UC-9 Smart Assistance «Phase 2»" {
+  usecase "UC-9.1\nGet Recipe Suggestions\nfrom Fridge Photo" as UC91
+  usecase "UC-9.2\nLog Suggested Recipe" as UC92
+  usecase "UC-9.3\nFind Healthy\nRestaurants Nearby" as UC93
+}
+actor "Food Recognition\nService" as FRS <<system>>
+actor "Location and\nMap Service" as Map <<system>>
+User -- UC91
+User -- UC93
+UC91 <.. UC92 : <<extend>>\n(recipe selected)
+UC91 --- FRS
+UC93 --- Map
+@enduml

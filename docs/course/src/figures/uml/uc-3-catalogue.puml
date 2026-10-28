@@ -1,0 +1,16 @@
+@startuml
+!include style.iuml
+left to right direction
+actor User
+rectangle "UC-3 Food Catalogue" {
+  usecase "UC-3.1\nSearch Food" as UC31
+  usecase "UC-3.2\nView Food Details" as UC32
+  usecase "UC-3.3\nCreate Custom Food" as UC33
+  usecase "UC-3.4\nCreate Recipe" as UC34
+}
+User -- UC31
+User -- UC33
+User -- UC34
+UC31 <.. UC32 : <<extend>>\n(result selected)
+UC34 ..> UC31 : <<include>>
+@enduml

@@ -1,0 +1,34 @@
+@startuml
+!include style.iuml
+hide empty description
+[*] --> Captured : photo taken
+Captured --> Uploading : [Phase 1]
+Captured --> RecognizingOnDevice : [Phase 2]
+state "Recognizing\non Device" as RecognizingOnDevice
+RecognizingOnDevice --> Uploading : [low confidence\nand online]
+RecognizingOnDevice --> Reviewing : [confident or offline]
+Uploading --> QuotaExceeded : [no free recognitions left]
+Uploading --> Recognizing : quota consumed
+Recognizing --> Reviewing : result received
+Recognizing --> Failed : error or timeout\n/ return quota
+state "Quota Exceeded" as QuotaExceeded
+QuotaExceeded : entry / show Premium offer
+Failed : entry / offer logging by search
+state Reviewing {
+  [*] --> Choice
+  state Choice <<choice>>
+  Choice --> SingleResult : [confident]
+  Choice --> Alternatives : [low confidence or\nconfusion group]
+  state "Single Result" as SingleResult
+  state "Alternatives Shown" as Alternatives
+  Alternatives --> Editing : alternative chosen
+  SingleResult --> Editing : item edited
+  Editing --> Editing : item replaced, removed,\nadded or grams adjusted
+}
+Reviewing --> Saved : save to meal\n/ create meal entries
+Reviewing --> Discarded : cancel
+QuotaExceeded --> [*]
+Failed --> [*]
+Saved --> [*]
+Discarded --> [*]
+@enduml

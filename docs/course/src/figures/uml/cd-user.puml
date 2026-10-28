@@ -1,0 +1,84 @@
+@startuml
+!include style.iuml
+left to right direction
+skinparam nodesep 40
+
+class UserAccount {
+  id : UUID
+  email : String [0..1]
+  authProvider : AuthProvider
+  createdAt : DateTime
+}
+class UserProfile {
+  displayName : String [0..1]
+  sex : Sex
+  dateOfBirth : Date
+  heightCm : Decimal
+  activityLevel : ActivityLevel
+  goal : GoalType
+  targetWeightKg : Decimal [0..1]
+  weeklyRateKg : Decimal
+  isPregnantOrBreastfeeding : Boolean
+  targetsManual : Boolean
+  unitSystem : UnitSystem
+  language : Language
+  timeZone : String
+  /age : Integer
+}
+class NutritionTarget {
+  effectiveFrom : Date
+  energyKcal : Decimal
+  proteinG : Decimal
+  carbohydrateG : Decimal
+  fatG : Decimal
+  bmr : Decimal
+  tdee : Decimal
+  effectiveWeeklyRateKg : Decimal
+  methodVersion : String
+}
+class MealEntry {
+  id : UUID {client-generated}
+  logDate : Date
+  meal : MealType
+  quantity : Decimal
+  grams : Decimal
+  energyKcal : Decimal
+  proteinG : Decimal
+  carbohydrateG : Decimal
+  fatG : Decimal
+  source : LogSource
+  syncState : SyncState
+}
+class WeightEntry {
+  measuredOn : Date
+  weightKg : Decimal
+}
+class WaterEntry {
+  logDate : Date
+  amountMl : Integer
+}
+class ReminderSetting {
+  type : ReminderType
+  time : Time
+  enabled : Boolean
+}
+class Food <<from Figure 5.2>>
+class PortionUnit <<from Figure 5.2>>
+
+UserAccount "1" *-- "1" UserProfile
+UserAccount "1" *-- "1..*" NutritionTarget : target\nhistory
+UserAccount "1" *-- "*" MealEntry
+UserAccount "1" *-- "*" WeightEntry
+UserAccount "1" *-- "*" WaterEntry
+UserAccount "1" *-- "*" ReminderSetting
+MealEntry "*" -- "1" Food
+MealEntry "*" -- "0..1" PortionUnit
+note right of MealEntry
+energyKcal ... fatG are a snapshot
+taken at logging time (FR-4.5).
+end note
+note bottom of NutritionTarget
+The target of a day is the latest record
+with effectiveFrom <= that day (FR-2.9).
+end note
+@enduml

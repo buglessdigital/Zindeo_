@@ -1,0 +1,34 @@
+@startuml
+!include style.iuml
+autonumber
+hide footbox
+actor Guest
+participant ":Zindeo App" as App
+participant "Identity Provider\n(Apple / Google)" as IdP
+participant ":Zindeo Backend" as BE
+
+Guest -> App : "Continue with Apple / Google"
+activate App
+App -> IdP : native sign-in
+activate IdP
+IdP -> Guest : authenticate (Face ID, password)
+Guest --> IdP : credentials
+IdP --> App : identity token
+deactivate IdP
+App -> BE : sign in with identity token
+activate BE
+BE -> BE : verify token; find or create account
+BE --> App : session (access and refresh tokens)
+deactivate BE
+App -> App : store session in secure storage
+alt new account
+  App --> Guest : start onboarding (UC-2.1)
+else existing account
+  App -> BE : load profile, targets and entries
+  activate BE
+  BE --> App : user data
+  deactivate BE
+  App --> Guest : daily dashboard
+end
+deactivate App
+@enduml

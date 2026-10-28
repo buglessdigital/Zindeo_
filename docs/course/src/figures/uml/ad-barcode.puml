@@ -1,0 +1,26 @@
+@startuml
+!include style.iuml
+|User|
+start
+:Scan the barcode of a packaged product;
+|Zindeo|
+:Search the barcode in the Zindeo catalogue;
+if (Found in the catalogue?) then (no)
+  |Open Food Facts|
+  :Look up the barcode;
+  |Zindeo|
+  :Add the product to the catalogue if it has\nenergy and macronutrient values\n(source: Open Food Facts);
+else (yes)
+endif
+if (Product available?) then (no)
+  :Inform the user; offer adding the product\nfrom its nutrition label (UC-4.4)\nor logging by search (UC-4.1);
+  stop
+else (yes)
+endif
+:Show the product with its portion units;
+|User|
+:Select quantity, unit and meal;
+|Zindeo|
+:Create the meal entry with a nutrition\nsnapshot (source: barcode);
+stop
+@enduml

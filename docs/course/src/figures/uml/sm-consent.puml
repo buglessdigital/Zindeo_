@@ -1,0 +1,20 @@
+@startuml
+!include style.iuml
+hide empty description
+state "Not Asked" as NotAsked
+state "Granted" as Granted
+state "Not Granted" as NotGranted
+state "Re-consent Required" as Reconsent
+[*] --> NotAsked
+NotAsked --> Granted : user accepts\n/ record consent
+NotAsked --> NotGranted : user declines\n/ record decision
+Granted --> NotGranted : user withdraws\n/ record withdrawal
+NotGranted --> Granted : user accepts\n/ record consent
+Granted --> Reconsent : new text version published
+Reconsent --> Granted : user accepts new version
+Reconsent --> NotGranted : user declines
+note bottom of NotGranted
+healthData: tracking features unavailable.
+trainingPhotos: photos are not stored.
+end note
+@enduml

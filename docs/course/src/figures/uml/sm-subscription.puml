@@ -1,0 +1,26 @@
+@startuml
+!include style.iuml
+hide empty description
+state "No Subscription" as None
+state "Grace Period" as Grace
+Grace : Premium still available
+state "Cancelled" as Cancelled
+Cancelled : Premium until end of paid period
+[*] --> None
+None --> Trial : purchase [trial offered]
+None --> Active : purchase [no trial]
+Trial --> Active : trial ends [not cancelled]\n/ first payment
+Trial --> Expired : trial ends [cancelled]
+Active --> Active : renewal succeeded
+Active --> Grace : renewal failed
+Grace --> Active : payment recovered
+Grace --> Expired : grace period ends
+Active --> Cancelled : user cancels in store
+Cancelled --> Active : user resubscribes
+Cancelled --> Expired : paid period ends
+Active --> Refunded : refund
+Cancelled --> Refunded : refund
+Refunded : Premium removed immediately
+Expired --> Active : purchase again
+Refunded --> Active : purchase again
+@enduml

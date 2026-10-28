@@ -1,0 +1,42 @@
+@startuml
+!include style.iuml
+|User|
+start
+|Zindeo|
+:Show KVKK information notice\nand health disclaimer;
+|User|
+:Read the notice and decide on\nconsent for health data;
+|Zindeo|
+if (Explicit consent given?) then (no)
+  :Explain that tracking\nrequires the consent;
+  stop
+else (yes)
+endif
+:Record the consent\n(type, text version, time);
+|User|
+:Enter sex, date of birth, height,\ncurrent weight and activity level;
+|Zindeo|
+if (Under 18, pregnant\nor breastfeeding?) then (yes)
+  :Warn and offer only\n"maintain" and "gain";
+else (no)
+  :Offer "lose", "maintain"\nand "gain";
+endif
+|User|
+:Select goal;
+if (Goal is "maintain"?) then (no)
+  repeat
+    :Select target weight and weekly rate\n(rates above 1% of body weight\nare disabled);
+    |Zindeo|
+  repeat while (Target BMI < 18.5?) is (yes: show minimum\ntarget weight) not (no)
+else (yes)
+endif
+|Zindeo|
+:Calculate nutrition targets\n(UC-2.2);
+:Show calorie and macro targets\nand the estimated date;
+|User|
+:Confirm targets;
+|Zindeo|
+:Save profile and targets;
+:Open the daily dashboard;
+stop
+@enduml

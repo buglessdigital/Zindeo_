@@ -1,0 +1,17 @@
+@startuml
+!include style.iuml
+left to right direction
+actor User
+rectangle "UC-7 Privacy and Consent" {
+  usecase "UC-7.1\nGive Health Data Consent" as UC71
+  usecase "UC-7.2\nManage Consents" as UC72
+  usecase "UC-7.3\nExport Personal Data" as UC73
+  usecase "UC-1.4\nDelete Account" as UC14 #line.dashed
+  usecase "UC-2.1\nComplete Onboarding" as UC21 #line.dashed
+}
+User -- UC72
+User -- UC73
+User -- UC14
+User -- UC21
+UC21 ..> UC71 : <<include>>
+@enduml

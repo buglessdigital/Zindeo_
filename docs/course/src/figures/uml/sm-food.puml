@@ -1,0 +1,14 @@
+@startuml
+!include style.iuml
+hide empty description
+state "In Review" as InReview
+[*] --> Draft : food added to catalogue file
+Draft --> InReview : submitted
+InReview --> Draft : validation failed or\nchanges requested
+InReview --> Verified : approved by a second\nteam member / load into database
+Verified : visible in search and recognition
+Verified --> InReview : correction submitted\n(current values stay visible)
+Verified --> Deprecated : removed / link replacing food
+Deprecated : hidden from search;\npast entries remain valid
+Draft : not visible to users
+@enduml

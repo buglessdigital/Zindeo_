@@ -1,0 +1,28 @@
+@startuml
+!include style.iuml
+start
+:Read profile: sex, age, height,\nlatest weight, activity level,\ngoal, target weight, weekly rate;
+if (Targets overridden\nmanually?) then (yes)
+  :Keep the manual targets and offer\n"apply suggested targets";
+  stop
+else (no)
+endif
+:BMR = 10 × weight + 6.25 × height − 5 × age + s\n(s = +5 male, −161 female, −78 not specified);
+:TDEE = BMR × activity factor\n(1.2 / 1.375 / 1.55 / 1.725 / 1.9);
+switch (Goal?)
+case (lose)
+  :target = TDEE − rate × 7,700 / 7;
+case (maintain)
+  :target = TDEE;
+case (gain)
+  :target = TDEE + rate × 7,700 / 7;
+endswitch
+if (target < minimum\n(1,200 kcal female or not specified,\n1,500 kcal male)?) then (yes)
+  :target = minimum; recalculate the\neffective weekly rate and inform\nthe user (FR-2.8);
+else (no)
+endif
+:Round the target to the nearest 10 kcal;
+:Protein = 1.6 g/kg (lose, gain) or 1.2 g/kg (maintain)\n× reference weight (capped at BMI 25)\nFat = 30% of energy / 9 (at least 0.6 g/kg)\nCarbohydrate = remaining energy / 4;
+:Estimate the date of reaching the target\nweight; save a new Nutrition Target valid\nfrom today with the method version;
+stop
+@enduml

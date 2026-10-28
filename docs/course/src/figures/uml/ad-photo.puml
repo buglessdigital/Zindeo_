@@ -1,0 +1,41 @@
+@startuml
+!include style.iuml
+|User|
+start
+:Take a photo of the meal\n(or select one from the gallery);
+|Zindeo|
+:Resize and compress the photo;
+:Check and consume the daily\nrecognition quota (on the server);
+if (Quota available?) then (no)
+  :Show Premium offer\n(extension point:\nquota exceeded);
+  stop
+else (yes)
+endif
+:Store the photo in private storage\nonly if training consent is given;
+|Food Recognition Service|
+:Detect the food items and return\ncandidate catalogue foods with\nconfidence and estimated grams;
+|Zindeo|
+if (Answer received\nin time?) then (no)
+  :Return the quota; offer\nlogging by search (UC-4.1);
+  stop
+else (yes)
+endif
+:Keep only catalogue foods; calculate\nenergy and macros from the catalogue;
+:Show each item: a single result, or 2–3\nalternatives if the confidence is low or the\nfood belongs to a confusion group;
+|User|
+repeat
+  :Confirm, replace, remove or\nadd items; adjust grams;
+  |Zindeo|
+  :Recalculate totals;
+  |User|
+repeat while (Result correct?) is (no) not (yes)
+if (Save?) then (yes)
+  :Select the meal and save;
+  |Zindeo|
+  :Create meal entries with a nutrition\nsnapshot; store the final result\nand the correction flags;
+else (cancel)
+  |Zindeo|
+  :Discard the recognition;
+endif
+stop
+@enduml

@@ -1,0 +1,39 @@
+@startuml
+!include style.iuml
+|Project Team|
+start
+fork
+  :Collect public datasets;
+  :Check each licence\n(confirm with original authors);
+  if (Commercial use allowed?) then (no)
+    :Use for experiments only;
+  else (yes)
+  endif
+fork again
+  :Photograph and weigh\nreference meals;
+fork again
+  |Zindeo System|
+  :Collect confirmed photos\nof consenting users;
+  |Project Team|
+end fork
+:Label images with catalogue codes\n(labelling guideline);
+:Freeze held-out test set\n(never used for training);
+:Evaluate candidate cloud\nvision-language models;
+:Select the Phase 1\nrecognition service;
+|Zindeo System|
+:Run Phase 1 with cloud recognition;
+|Project Team|
+:Train recognition model\n(transfer learning, PyTorch);
+:Train plate detection and\nfood segmentation models;
+:Calibrate confidence scores;
+:Quantize and convert\nto a mobile runtime;
+:Compare with Phase 1 service\non the same test set;
+if (NFR-5, NFR-6 and NFR-9 met?) then (no)
+  :Analyse errors, collect\nmore data for weak classes;
+  stop
+else (yes)
+  |Zindeo System|
+  :Release on-device models\n(Phase 2);
+  stop
+endif
+@enduml

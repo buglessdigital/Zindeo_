@@ -1,0 +1,37 @@
+@startuml
+!include style.iuml
+left to right direction
+skinparam nodesep 30
+skinparam ranksep 60
+node "«device»\nSmartphone (iOS 16+ / Android 9+)" as Phone {
+  artifact "Zindeo App\n(React Native, Expo)" as App
+  database "Local store\n(offline entries)" as Local
+  artifact "On-device models\n«Phase 2»" as Model
+  artifact "Secure storage\n(session tokens)" as Secure
+}
+node "«cloud»\nSupabase, EU (Frankfurt)" as Supa {
+  component "Authentication" as Auth
+  component "Data API" as Api
+  component "Server functions" as Fn
+  database "PostgreSQL\n(row-level security)" as DB
+  database "Private file\nstorage (photos)" as Files
+}
+node "«external»\nApple / Google\nidentity" as Idp
+node "«external»\nCloud vision-\nlanguage model\n«Phase 1»" as VLM
+node "«external»\nApp Store /\nGoogle Play" as Stores
+node "«external»\nOpen Food\nFacts" as OFF
+node "«external»\nPush notification\nservice" as Push
+
+App -[hidden]- Local
+App -[hidden]- Model
+App -[hidden]- Secure
+App --> Supa : HTTPS/TLS\n(session token)
+Api --> DB
+Fn --> DB
+Fn --> Files
+Auth --> Idp : verify\ntokens
+Fn --> VLM : API key on\nserver only
+Fn <--> Stores : purchases,\nnotifications
+Fn --> OFF : barcode\nlookup
+Fn --> Push : reminders
+@enduml

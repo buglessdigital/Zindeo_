@@ -1,0 +1,39 @@
+@startuml
+!include style.iuml
+skinparam packageStyle folder
+skinparam nodesep 40
+skinparam ranksep 55
+
+package "UC-1 Account\nManagement" as P1 {
+}
+package "UC-2 Profile\nand Goals" as P2 {
+}
+package "UC-3 Food\nCatalogue" as P3 {
+}
+package "UC-4 Meal\nLogging" as P4 {
+}
+package "UC-5 Progress\nTracking" as P5 {
+}
+package "UC-6 Subscription" as P6 {
+}
+package "UC-7 Privacy\nand Consent" as P7 {
+}
+package "UC-8 Settings and\nNotifications" as P8 {
+}
+package "UC-9 Smart Assistance\n«Phase 2»" as P9 {
+}
+package "UC-10 Catalogue\nAdministration" as P10 {
+}
+
+P1 ..> P2
+P1 ..> P7
+P2 ..> P7
+P4 ..> P3
+P4 ..> P6
+P5 ..> P4
+P5 ..> P2
+P8 ..> P2
+P9 ..> P3
+P9 ..> P4
+P10 ..> P3
+@enduml

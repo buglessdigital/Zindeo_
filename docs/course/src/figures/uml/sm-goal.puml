@@ -1,0 +1,16 @@
+@startuml
+!include style.iuml
+hide empty description
+[*] --> Active : onboarding completed
+Active --> Active : weight recorded or profile changed\n/ recalculate targets
+Active --> Reached : weight recorded\n[target weight reached]
+Reached : entry / offer "maintain weight"
+Reached --> Reached : user keeps the goal
+Reached --> Replaced : user switches to "maintain"\nor sets a new goal
+Active --> Replaced : user changes the goal
+Replaced --> [*]
+note right of Replaced
+A new Active goal is created;
+past days keep their targets.
+end note
+@enduml

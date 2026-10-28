@@ -1,0 +1,18 @@
+@startuml
+!include style.iuml
+|Content Administrator (author)|
+start
+repeat
+  :Edit the catalogue file: food, names,\nnutrition values, portions, recipe;
+  :Submit the change for review;
+  |Zindeo Catalogue Pipeline|
+  :Validate automatically: required nutrients\npresent, energy within 15% of the\nenergy from macronutrients;
+  |Content Administrator (reviewer)|
+  :If valid, review sources, portions\nand values; approve or request changes;
+  |Zindeo Catalogue Pipeline|
+repeat while (Valid and approved?) is (no: author\ncorrects the change) not (yes)
+:Load the change into the database;
+:Mark the food as verified;
+:The food becomes visible in\nsearch and recognition;
+stop
+@enduml

@@ -1,0 +1,47 @@
+@startuml
+!include style.iuml
+left to right direction
+hide members
+skinparam nodesep 45
+skinparam ranksep 50
+
+class UserAccount
+class UserProfile
+class NutritionTarget
+class MealEntry
+class WeightEntry
+class WaterEntry
+class ReminderSetting
+class Recognition
+class RecognitionItem
+class Candidate
+class DailyRecognitionUsage
+class Subscription
+class Consent
+class Food
+class FoodCategory
+class PortionUnit
+class StandardRecipe
+class ConfusionGroup
+
+UserAccount "1" *-- "1" UserProfile
+UserAccount "1" *-- "1..*" NutritionTarget
+UserAccount "1" *-- "*" MealEntry
+UserAccount "1" *-- "*" WeightEntry
+UserAccount "1" *-- "*" WaterEntry
+UserAccount "1" *-- "*" ReminderSetting
+UserAccount "1" *-- "*" Recognition
+UserAccount "1" *-- "*" DailyRecognitionUsage
+UserAccount "1" *-- "*" Subscription
+UserAccount "1" *-- "*" Consent
+Recognition "1" *-- "1..*" RecognitionItem
+RecognitionItem "1" *-- "1..*" Candidate
+RecognitionItem "0..1" -- "0..*" MealEntry : results in >
+MealEntry "*" -- "1" Food
+MealEntry "*" -- "0..1" PortionUnit
+Candidate "*" -- "1" Food
+Food "*" -- "1" FoodCategory
+Food "1" *-- "1..*" PortionUnit
+Food "1" -- "0..1" StandardRecipe
+Food "*" -- "0..1" ConfusionGroup
+@enduml

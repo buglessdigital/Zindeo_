@@ -1,0 +1,14 @@
+@startuml
+!include style.iuml
+left to right direction
+actor "Content\nAdministrator" as Admin
+rectangle "UC-10 Catalogue Administration" {
+  usecase "UC-10.1\nEdit Catalogue Food" as UC101
+  usecase "UC-10.2\nReview and Publish Food" as UC102
+  usecase "UC-10.3\nDeprecate Food" as UC103
+}
+Admin -- UC101
+Admin -- UC102
+Admin -- UC103
+note right of UC102 : The reviewer must be a\nteam member other than\nthe author of the change
+@enduml

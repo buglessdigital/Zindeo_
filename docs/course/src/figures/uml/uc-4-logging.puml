@@ -1,0 +1,29 @@
+@startuml
+!include style.iuml
+left to right direction
+actor User
+rectangle "UC-4 Meal Logging" {
+  usecase "UC-4.1\nLog Meal by Search" as UC41
+  usecase "UC-4.2\nLog Meal by Photo\n--\nextension points\nquota exceeded" as UC42
+  usecase "UC-4.3\nLog Meal by Barcode\n--\nextension points\nproduct not found" as UC43
+  usecase "UC-4.4\nAdd Product from\nNutrition Label" as UC44
+  usecase "UC-4.5\nEdit Meal Entry" as UC45
+  usecase "UC-4.6\nCopy Previous Meal" as UC46
+  usecase "UC-4.7\nLog Water Intake" as UC47
+  usecase "UC-3.1\nSearch Food" as UC31 #line.dashed
+  usecase "UC-6.1\nPurchase Premium\nSubscription" as UC61 #line.dashed
+}
+actor "Food Recognition\nService" as FRS <<system>>
+actor "Open Food\nFacts" as OFF <<system>>
+User -- UC41
+User -- UC42
+User -- UC43
+User -- UC45
+User -- UC46
+User -- UC47
+UC41 ..> UC31 : <<include>>
+UC42 <.. UC61 : <<extend>>\n(quota exceeded)
+UC43 <.. UC44 : <<extend>>\n(product not found)
+UC42 --- FRS
+UC43 --- OFF
+@enduml

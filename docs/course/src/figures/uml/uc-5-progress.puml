@@ -1,0 +1,24 @@
+@startuml
+!include style.iuml
+left to right direction
+actor User
+actor "Premium User" as Premium
+User <|-- Premium
+rectangle "UC-5 Progress Tracking" {
+  usecase "UC-5.1\nView Daily Dashboard" as UC51
+  usecase "UC-5.2\nView Progress Reports" as UC52
+  usecase "UC-5.3\nView Monthly\nNutrition Report" as UC53
+  usecase "UC-5.4\nRecord Body Weight" as UC54
+  usecase "UC-5.5\nSynchronise with\nHealth Platform" as UC55
+  usecase "UC-2.2\nCalculate Nutrition Targets" as UC22 #line.dashed
+}
+actor "Health\nPlatform" as HP <<system>>
+User -- UC51
+User -- UC52
+User -- UC54
+User -- UC55
+Premium -- UC53
+UC52 <.. UC53 : <<extend>>\n(Premium user)
+UC54 ..> UC22 : <<include>>
+UC55 --- HP
+@enduml

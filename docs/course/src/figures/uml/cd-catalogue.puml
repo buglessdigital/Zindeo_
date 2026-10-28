@@ -1,0 +1,70 @@
+@startuml
+!include style.iuml
+left to right direction
+skinparam nodesep 40
+
+class FoodCategory {
+  code : String {unique}
+  nameTr : String
+  nameEn : String
+}
+class Food {
+  code : String {unique, permanent}
+  kind : FoodKind
+  nameTr : String
+  nameEn : String
+  brand : String [0..1]
+  barcode : String [0..1] {unique}
+  energyKcalPer100g : Decimal
+  proteinGPer100g : Decimal
+  carbohydrateGPer100g : Decimal
+  fatGPer100g : Decimal
+  isRecognizable : Boolean
+  status : FoodStatus
+  source : DataSource
+  sourceReference : String [0..1]
+}
+class AlternativeName {
+  text : String
+  language : Language
+}
+class PortionUnit {
+  unit : PortionUnitType
+  grams : Decimal
+  labelTr : String
+  labelEn : String
+  isDefault : Boolean
+}
+class NutrientValue {
+  nutrient : String
+  amountPer100g : Decimal
+}
+class StandardRecipe {
+  cookingYieldFactor : Decimal
+}
+class RecipeIngredient {
+  rawGrams : Decimal
+}
+class ConfusionGroup {
+  code : String {unique}
+}
+class UserAccount <<from Figure 5.3>>
+
+FoodCategory "0..1" -- "*" FoodCategory : parent
+FoodCategory "1" -- "*" Food : groups >
+Food "1" *-- "*" AlternativeName
+Food "1" *-- "1..*" PortionUnit
+Food "1" *-- "*" NutrientValue : additional\nnutrients
+Food "1" *-- "0..1" StandardRecipe : dish >
+StandardRecipe "1" *-- "1..*" RecipeIngredient
+RecipeIngredient "*" -- "1" Food : ingredient >
+ConfusionGroup "0..1" o-- "2..*" Food : similar\nfoods
+Food "*" -- "0..1" Food : replacedBy
+Food "*" -- "0..1" UserAccount : owner\n(user-defined only)
+note bottom of Food
+Nutrition values are per 100 g
+of the edible portion.
+A food is never deleted:
+it becomes deprecated (FR-15.3).
+end note
+@enduml

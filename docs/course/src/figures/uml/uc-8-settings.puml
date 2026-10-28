@@ -1,0 +1,16 @@
+@startuml
+!include style.iuml
+left to right direction
+actor User
+rectangle "UC-8 Settings and Notifications" {
+  usecase "UC-8.1\nManage App Settings" as UC81
+  usecase "UC-8.2\nConfigure Reminders" as UC82
+  usecase "UC-8.3\nSend Reminder" as UC83
+}
+actor "Scheduler\n(Time)" as Time <<system>>
+actor "Notification\nService" as NS <<system>>
+User -- UC81
+User -- UC82
+Time -- UC83
+UC83 -- NS
+@enduml

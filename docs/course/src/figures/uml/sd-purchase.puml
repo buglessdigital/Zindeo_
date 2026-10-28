@@ -1,0 +1,43 @@
+@startuml
+!include style.iuml
+autonumber
+hide footbox
+actor User
+participant ":Zindeo App" as App
+participant "App Store /\nGoogle Play" as Store
+participant ":Zindeo Backend" as BE
+
+User -> App : open Premium offer
+activate App
+App -> Store : get products and prices
+activate Store
+Store --> App : monthly, yearly (trial eligibility)
+deactivate Store
+App --> User : show plans
+User -> App : select plan
+App -> Store : purchase(product)
+activate Store
+Store -> User : confirm payment (store dialogue)
+User --> Store : confirm
+Store --> App : transaction (receipt)
+deactivate Store
+App -> BE : verify(transaction)
+activate BE
+BE -> Store : validate transaction
+activate Store
+Store --> BE : valid, expiry date
+deactivate Store
+BE -> BE : create / update Subscription\n(status Trial or Active)
+BE --> App : Premium active until expiry
+deactivate BE
+App -> Store : finish transaction
+App --> User : Premium unlocked
+deactivate App
+
+== Later: renewal, cancellation, expiry or refund (UC-6.3) ==
+Store -> BE : server notification
+activate BE
+BE -> Store : validate notification
+BE -> BE : update Subscription status
+deactivate BE
+@enduml

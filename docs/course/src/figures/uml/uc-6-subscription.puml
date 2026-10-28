@@ -1,0 +1,17 @@
+@startuml
+!include style.iuml
+left to right direction
+actor User
+rectangle "UC-6 Subscription" {
+  usecase "UC-6.1\nPurchase Premium\nSubscription" as UC61
+  usecase "UC-6.2\nRestore Purchases" as UC62
+  usecase "UC-6.3\nProcess Store\nNotification" as UC63
+}
+actor "App Store /\nGoogle Play" as Store <<system>>
+User -- UC61
+User -- UC62
+UC61 -- Store
+UC62 -- Store
+Store -- UC63
+note right of UC63 : Renewal, failed renewal,\ncancellation, expiry, refund
+@enduml

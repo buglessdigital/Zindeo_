@@ -1,0 +1,21 @@
+@startuml
+!include style.iuml
+left to right direction
+actor Guest
+actor User
+rectangle "UC-1 Account Management" {
+  usecase "UC-1.1\nRegister Account" as UC11
+  usecase "UC-1.2\nSign In" as UC12
+  usecase "UC-1.3\nReset Password" as UC13
+  usecase "UC-1.4\nDelete Account" as UC14
+  usecase "UC-2.1\nComplete Onboarding" as UC21 #line.dashed
+}
+actor "Identity\nProvider" as IdP <<system>>
+Guest -- UC11
+Guest -- UC12
+User -- UC14
+UC12 <.. UC13 : <<extend>>\n(forgotten password)
+UC11 ..> UC21 : <<include>>
+UC11 --- IdP
+UC12 --- IdP
+@enduml

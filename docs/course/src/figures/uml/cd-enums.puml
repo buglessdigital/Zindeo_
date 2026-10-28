@@ -1,0 +1,135 @@
+@startuml
+!include style.iuml
+skinparam nodesep 25
+skinparam ranksep 18
+show enum members
+enum FoodKind <<enumeration>> {
+  dish
+  ingredient
+  branded
+  userDefined
+}
+enum FoodStatus <<enumeration>> {
+  draft
+  inReview
+  verified
+  deprecated
+}
+enum DataSource <<enumeration>> {
+  turkomp
+  usda
+  zindeoRecipe
+  openFoodFacts
+  productLabel
+  user
+}
+enum PortionUnitType <<enumeration>> {
+  gram
+  ml
+  serving
+  bowl
+  plate
+  slice
+  piece
+  tablespoon
+  teaspoon
+  cup
+  teaGlass
+  handful
+}
+enum Sex <<enumeration>> {
+  male
+  female
+  notSpecified
+}
+enum ActivityLevel <<enumeration>> {
+  sedentary
+  light
+  moderate
+  active
+  veryActive
+}
+enum GoalType <<enumeration>> {
+  lose
+  maintain
+  gain
+}
+enum MealType <<enumeration>> {
+  breakfast
+  lunch
+  dinner
+  snack
+}
+enum LogSource <<enumeration>> {
+  search
+  photo
+  barcode
+  copy
+  recipe
+}
+enum SyncState <<enumeration>> {
+  pendingSync
+  synced
+}
+enum RecognitionEngine <<enumeration>> {
+  cloud
+  onDevice
+}
+enum RecognitionStatus <<enumeration>> {
+  success
+  failed
+  quotaExceeded
+}
+enum StorePlatform <<enumeration>> {
+  appStore
+  googlePlay
+}
+enum SubscriptionStatus <<enumeration>> {
+  trial
+  active
+  gracePeriod
+  cancelled
+  expired
+  refunded
+}
+enum ConsentType <<enumeration>> {
+  healthData
+  trainingPhotos
+  marketing
+}
+enum AuthProvider <<enumeration>> {
+  apple
+  google
+  email
+}
+enum UnitSystem <<enumeration>> {
+  metric
+  imperial
+}
+enum Language <<enumeration>> {
+  tr
+  en
+}
+enum ReminderType <<enumeration>> {
+  meal
+  weighIn
+}
+FoodKind -[hidden]> FoodStatus
+FoodStatus -[hidden]> DataSource
+DataSource -[hidden]> PortionUnitType
+PortionUnitType -[hidden]> Sex
+FoodKind -[hidden]-- ActivityLevel
+FoodStatus -[hidden]-- GoalType
+DataSource -[hidden]-- MealType
+PortionUnitType -[hidden]-- LogSource
+Sex -[hidden]-- SyncState
+ActivityLevel -[hidden]-- RecognitionEngine
+GoalType -[hidden]-- RecognitionStatus
+MealType -[hidden]-- StorePlatform
+LogSource -[hidden]-- SubscriptionStatus
+SyncState -[hidden]-- ConsentType
+RecognitionEngine -[hidden]-- AuthProvider
+RecognitionStatus -[hidden]-- UnitSystem
+StorePlatform -[hidden]-- Language
+SubscriptionStatus -[hidden]-- ReminderType
+@enduml

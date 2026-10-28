@@ -1,0 +1,85 @@
+' Shared style for the Zindeo course-document UML figures
+skinparam dpi 220
+skinparam defaultFontName "Times New Roman"
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam linetype polyline
+skinparam monochrome false
+skinparam backgroundColor white
+skinparam ArrowColor black
+skinparam ArrowThickness 0.9
+skinparam BorderThickness 0.9
+skinparam actorStyle default
+skinparam actor {
+  BorderColor black
+  BackgroundColor white
+}
+skinparam usecase {
+  BorderColor black
+  BackgroundColor #F7F7F7
+}
+skinparam rectangle {
+  BorderColor black
+  BackgroundColor white
+  FontStyle bold
+}
+skinparam package {
+  BorderColor black
+  BackgroundColor white
+}
+skinparam note {
+  BorderColor #808080
+  BackgroundColor #FFFFF0
+}
+skinparam class {
+  BorderColor black
+  BackgroundColor #F7F7F7
+  HeaderBackgroundColor #E8E8E8
+  AttributeIconSize 0
+}
+skinparam stereotypeCBackgroundColor white
+hide circle
+skinparam state {
+  BorderColor black
+  BackgroundColor #F7F7F7
+  StartColor black
+  EndColor black
+}
+skinparam activity {
+  BorderColor black
+  BackgroundColor #F7F7F7
+  DiamondBorderColor black
+  DiamondBackgroundColor white
+  StartColor black
+  EndColor black
+  BarColor black
+}
+skinparam partition {
+  BorderColor black
+}
+skinparam swimlane {
+  BorderColor black
+  TitleFontStyle bold
+}
+skinparam sequence {
+  LifeLineBorderColor #606060
+  ParticipantBorderColor black
+  ParticipantBackgroundColor #F7F7F7
+  ActorBorderColor black
+  ActorBackgroundColor white
+  GroupBorderColor #606060
+  GroupBackgroundColor #EFEFEF
+  BoxBorderColor #808080
+}
+skinparam node {
+  BorderColor black
+  BackgroundColor #F7F7F7
+}
+skinparam component {
+  BorderColor black
+  BackgroundColor white
+}
+skinparam database {
+  BorderColor black
+  BackgroundColor white
+}

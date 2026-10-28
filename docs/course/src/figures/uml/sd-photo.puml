@@ -1,0 +1,46 @@
+@startuml
+!include style.iuml
+autonumber
+hide footbox
+actor User
+participant ":Zindeo App" as App
+participant ":Zindeo Backend" as BE
+participant ":Food Recognition\nService" as FRS
+
+User -> App : take photo
+activate App
+App -> App : resize and compress
+App -> BE : recognize(photo)
+activate BE
+BE -> BE : consume daily quota
+alt quota exceeded
+  BE --> App : quota exceeded
+  App --> User : show Premium offer
+else quota available
+  opt training-photo consent given
+    BE -> BE : store photo (private)
+  end
+  BE -> FRS : recognize(photo,\ncatalogue food codes)
+  activate FRS
+  FRS --> BE : items [candidates,\nconfidence, grams]
+  deactivate FRS
+  BE -> BE : keep only catalogue foods
+  BE -> BE : record recognition
+  BE --> App : recognition result
+  deactivate BE
+  App -> App : calculate energy and macros\nfrom catalogue values per 100 g
+  App --> User : show items (alternatives if uncertain)
+  loop until the user is satisfied
+    User -> App : confirm / replace / remove / add / adjust grams
+    App --> User : updated totals
+  end
+  User -> App : save to meal
+  App -> BE : create meal entries (nutrition snapshot)
+  activate BE
+  App -> BE : send final result (feedback)
+  BE --> App : saved
+  deactivate BE
+  App --> User : updated daily dashboard
+end
+deactivate App
+@enduml

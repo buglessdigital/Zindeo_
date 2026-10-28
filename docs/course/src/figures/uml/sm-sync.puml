@@ -1,0 +1,15 @@
+@startuml
+!include style.iuml
+hide empty description
+state "Pending Sync" as Pending
+Pending : shown to the user immediately
+state "Syncing" as Syncing
+state "Synced" as Synced
+[*] --> Pending : entry created or edited
+Pending --> Syncing : connection available
+Syncing --> Synced : server confirms\n(same id: no duplicate)
+Syncing --> Pending : failure / retry later
+Synced --> Pending : entry edited
+Synced --> [*] : entry deleted [online]
+Pending --> [*] : entry deleted\n/ deletion queued
+@enduml
