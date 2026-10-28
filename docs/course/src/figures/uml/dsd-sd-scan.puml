@@ -1,0 +1,43 @@
+@startuml
+!include style.iuml
+autonumber
+hide footbox
+participant ":ScanController" as SC
+participant ":CloudRecognizer" as CR
+participant "scan\n(Edge Function)" as F
+participant "consume_scan_quota\n(RPC)" as Q
+participant "scan-images\n(Storage)" as ST
+participant "VLM client\n(_shared)" as V
+participant "TargetCalculator /\nPortionCalculator" as N
+
+SC -> CR : recognize(image)
+activate CR
+CR -> CR : resize to 1024 px, JPEG
+CR -> F : POST /scan (image, JWT)
+activate F
+F -> F : verify JWT, read user
+F -> Q : consume(user, localDate)
+activate Q
+Q --> F : ok | limit reached
+deactivate Q
+alt limit reached
+  F --> CR : 402 quota_exceeded
+  CR --> SC : QuotaExceededError
+else ok
+  opt current trainingPhotos consent granted
+    F -> ST : upload(user/scanId.jpg)
+  end
+  F -> V : classify(image, recognizable food codes,\nJSON schema)
+  activate V
+  V --> F : items [code, confidence, grams]
+  deactivate V
+  F -> F : drop unknown codes, add confusion\ngroup members as candidates
+  F -> F : insert scans, scan_items
+  F --> CR : 200 RecognitionResult
+  deactivate F
+  CR --> SC : RecognitionResult
+  deactivate CR
+  SC -> N : nutrients(food, grams) per item
+  N --> SC : NutrientSnapshot
+end
+@enduml

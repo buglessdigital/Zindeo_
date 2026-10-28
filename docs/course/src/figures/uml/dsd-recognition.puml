@@ -1,0 +1,61 @@
+@startuml
+!include style.iuml
+skinparam nodesep 40
+interface FoodRecognizer <<interface>> {
+  +recognize(image : ImageInput) : RecognitionResult
+}
+class CloudRecognizer {
+  -api : ApiClient
+  +recognize(image : ImageInput) : RecognitionResult
+}
+class OnDeviceRecognizer <<Phase 2>> {
+  -model : ModelSession
+  -labels : FoodCode[]
+  -temperature : Number
+  +recognize(image : ImageInput) : RecognitionResult
+}
+class HybridRecognizer <<Phase 2>> {
+  -primary : OnDeviceRecognizer
+  -fallback : CloudRecognizer
+  -threshold : Number
+  +recognize(image : ImageInput) : RecognitionResult
+}
+class RecognitionResult {
+  +scanId : UUID [0..1]
+  +engine : RecognitionEngine
+  +modelVersion : String
+  +items : RecognitionItemDto[]
+}
+class RecognitionItemDto {
+  +candidates : Candidate[1..*]
+  +estimatedGrams : Number
+}
+class Candidate {
+  +foodCode : FoodCode
+  +confidence : Number
+}
+class ScanController {
+  +start(image : ImageInput) : ScanState
+  +replaceItem(i : Integer, food : Food)
+  +setGrams(i : Integer, grams : Number)
+  +save(meal : MealType) : MealEntry[]
+}
+class RecognizerFactory {
+  +create(flags : FeatureFlags) : FoodRecognizer
+}
+FoodRecognizer <|.. CloudRecognizer
+FoodRecognizer <|.. OnDeviceRecognizer
+FoodRecognizer <|.. HybridRecognizer
+HybridRecognizer o-- OnDeviceRecognizer
+HybridRecognizer o-- CloudRecognizer
+FoodRecognizer ..> RecognitionResult : returns
+RecognitionResult *-- "*" RecognitionItemDto
+RecognitionItemDto *-- "1..*" Candidate
+ScanController --> FoodRecognizer
+RecognizerFactory ..> FoodRecognizer : creates
+note bottom of RecognitionResult
+Contains no energy or nutrient values;
+they are always calculated by
+core/nutrition from the catalogue.
+end note
+@enduml

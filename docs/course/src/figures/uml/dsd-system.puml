@@ -1,0 +1,42 @@
+@startuml
+!include style.iuml
+skinparam componentStyle uml2
+skinparam nodesep 50
+skinparam ranksep 60
+
+component "Zindeo Mobile\nApplication" as App
+component "Zindeo Backend" as BE
+component "Catalogue Content\nPipeline" as Cat
+component "Machine Learning\nPipeline «Phase 2»" as ML
+
+interface "Auth API" as IAuth
+interface "Data API\n(REST + RPC)" as IData
+interface "Server Functions\nAPI" as IFn
+interface "Catalogue\nfiles" as ICat
+interface "Model\nartifacts" as IModel
+interface "Labelled\ntraining data" as ITrain
+
+BE -up- IAuth
+BE -up- IData
+BE -up- IFn
+App -down-( IAuth
+App -down-( IData
+App -down-( IFn
+
+Cat -- ICat
+BE -( ICat
+
+ML -- IModel
+App ..( IModel
+BE -- ITrain
+ML -( ITrain
+
+component "Food Recognition\nService (cloud VLM)" as VLM <<external>>
+component "App Store /\nGoogle Play" as Store <<external>>
+component "Apple / Google\nIdentity" as Idp <<external>>
+component "Open Food Facts" as OFF <<external>>
+BE --> VLM
+BE --> Store
+BE --> Idp
+BE --> OFF
+@enduml

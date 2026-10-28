@@ -1,0 +1,56 @@
+@startuml
+!include style.iuml
+skinparam nodesep 35
+package "core/nutrition" {
+  class TargetCalculator <<utility>> {
+    +{static} bmr(p : BodyData) : Number
+    +{static} tdee(bmr : Number, a : ActivityLevel) : Number
+    +{static} targets(p : Profile, w : Number) : TargetResult
+    +{static} allowedRates(w : Number, g : GoalType) : Number[]
+    +{static} minTargetWeight(heightCm : Number) : Number
+  }
+  class PortionCalculator <<utility>> {
+    +{static} grams(qty : Number, unit : PortionUnit) : Number
+    +{static} nutrients(food : Food, grams : Number) : NutrientSnapshot
+  }
+  class TargetResult {
+    energyKcal, proteinG, carbohydrateG, fatG
+    bmr, tdee, effectiveWeeklyRateKg
+    estimatedDate, limitApplied : Boolean
+    methodVersion = "nutrition-v1"
+  }
+}
+package "core/offline" {
+  class LocalStore {
+    +pending() : PendingWrite[]
+    +put(w : PendingWrite)
+    +remove(id : UUID)
+    +cacheFoods(f : Food[])
+  }
+  class SyncQueue {
+    -store : LocalStore
+    +enqueue(op : WriteOp)
+    +flush() : SyncReport
+    -onConnectivityChange(online : Boolean)
+  }
+  class PendingWrite {
+    id : UUID
+    table : String
+    op : upsert | delete
+    payload : JSON
+    attempts : Integer
+  }
+}
+package "core/api" {
+  class ApiClient {
+    +from(table : String) : QueryBuilder
+    +rpc(fn : String, args : JSON) : JSON
+    +invoke(fn : String, body : JSON) : JSON
+  }
+}
+TargetCalculator ..> TargetResult
+SyncQueue --> LocalStore
+LocalStore *-- "*" PendingWrite
+SyncQueue --> ApiClient : upsert by id
+TargetResult -[hidden]down- SyncQueue
+@enduml

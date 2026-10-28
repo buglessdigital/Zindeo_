@@ -1,0 +1,38 @@
+@startuml
+!include style.iuml
+skinparam nodesep 30
+skinparam ranksep 55
+node "«device» iPhone (iOS 16+)\nor Android phone (9+)" as Phone {
+  artifact "Zindeo.ipa / Zindeo.aab\n(Expo SDK 58, React Native 0.88,\nHermes JavaScript engine)" as App
+  database "SQLite\n(zindeo.db)" as Local
+  artifact "Keychain / Keystore\n(session tokens)" as Secure
+  artifact "model file + labels.json\n«Phase 2»" as Model
+}
+node "«cloud» Supabase project, eu-central-1 (Frankfurt)" as Supa {
+  node "PostgreSQL 17" as PG {
+    artifact "schema from\nsupabase/migrations/*.sql" as Mig
+  }
+  node "Edge Runtime (Deno 2)" as Edge {
+    artifact "supabase/functions/*" as Fns
+  }
+  node "Auth (GoTrue)" as Auth
+  node "Storage (S3-compatible)" as Sto
+}
+node "«cloud» Expo Application Services" as EAS {
+  artifact "EAS Build, EAS Submit,\nEAS Update (OTA)" as Build
+}
+node "«cloud» GitHub" as GH {
+  artifact "repository +\nGitHub Actions CI" as Repo
+}
+App -- Local
+App -- Secure
+App -- Model
+App --> Supa : HTTPS (TLS 1.2+)
+Repo --> Supa : supabase db push,\nfunctions deploy
+Repo --> EAS : eas build
+Build ..> App : store release / OTA update
+GH -[hidden]right- EAS
+PG -[hidden]down- Edge
+Auth -[hidden]down- Sto
+Local -[hidden]down- Secure
+@enduml

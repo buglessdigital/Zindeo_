@@ -1,0 +1,25 @@
+@startuml
+!include style.iuml
+skinparam packageStyle rectangle
+skinparam rectangle {
+  FontStyle plain
+}
+skinparam nodesep 30
+package "ml/ (Python, PyTorch) «Phase 2»" {
+  rectangle "data\ndownload, licence register,\nde-duplication, splits" as d
+  rectangle "labelling\nguideline, label tool\nexport → catalogue codes" as l
+  rectangle "train\nclassifier, plate detector,\nfood segmenter, ingredients" as t
+  rectangle "evaluate\nfixed test set: top-1, top-3,\nenergy error, calibration" as e
+  rectangle "export\nquantize (int8), convert\nto mobile runtime" as x
+}
+database "Supabase Storage\ntraining images\n(consented only)" as S
+database "Catalogue files\n(food codes)" as C
+artifact "model files +\nlabels.json +\nmodel card" as M
+S --> d
+C --> l
+d --> l
+l --> t
+t --> e
+e --> x : passes\nNFR-5, 6, 9
+x --> M
+@enduml

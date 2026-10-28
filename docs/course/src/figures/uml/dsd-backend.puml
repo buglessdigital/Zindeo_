@@ -1,0 +1,22 @@
+@startuml
+!include style.iuml
+skinparam ranksep 45
+skinparam nodesep 40
+package "API layer" {
+  component "Supabase Auth\n(Apple, Google, e-mail)" as Auth
+  component "Data API (PostgREST)\nCRUD on user tables" as Rest
+  component "Edge Functions (Deno, TypeScript)\nscan · scan-feedback · barcode-lookup\nsubscription-verify · store-webhook\naccount-delete · data-export · send-reminders\n_shared: auth, errors, logging, VLM and store clients" as EF
+}
+package "Data layer" {
+  component "RPC functions (PL/pgSQL)\nsearch_foods · consume_scan_quota\nrefund_scan_quota · copy_meal · current_targets" as RPC
+  database "PostgreSQL tables\n+ row-level security\npolicies" as Tables
+  database "Storage buckets\nscan-images (private)\nexports (private)" as Buckets
+}
+Rest --> Tables : as the user (RLS)
+Rest --> RPC
+EF --> RPC
+EF --> Tables : service role
+EF --> Buckets
+RPC --> Tables
+Auth -[hidden]- RPC
+@enduml

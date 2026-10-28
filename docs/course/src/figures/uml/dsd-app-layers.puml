@@ -1,0 +1,14 @@
+@startuml
+!include style.iuml
+skinparam ranksep 30
+skinparam rectangle {
+  FontStyle plain
+}
+rectangle "<b>Presentation layer</b>  —  app/ (Expo Router screens)\n(auth): welcome, sign-in, register · (onboarding): consent, body data, goal, targets\n(tabs): dashboard, progress, add food, profile · modals: camera, scan result, barcode, paywall" as L1
+rectangle "<b>Feature layer</b>  —  src/features/\nauth · onboarding · food-search · logging · scan · barcode\ndashboard · weight · subscription · privacy · settings\n(hooks, view models and queries of one feature; features do not import each other)" as L2
+rectangle "<b>Core layer</b>  —  src/core/\nnutrition (pure functions) · recognition (FoodRecognizer) · offline (local store, sync queue)\napi (Supabase client, typed queries) · i18n · ui (design system components)" as L3
+rectangle "<b>Platform layer</b>  —  Expo SDK and React Native modules\nexpo-camera, expo-image-manipulator · expo-sqlite · expo-secure-store · expo-notifications\nin-app purchase and sign-in modules · on-device inference runtime «Phase 2»" as L4
+L1 -down-> L2 : uses
+L2 -down-> L3 : uses
+L3 -down-> L4 : uses
+@enduml
