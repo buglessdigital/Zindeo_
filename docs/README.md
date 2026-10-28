@@ -32,7 +32,7 @@ Durum: ✅ hazır · 📝 taslak · ⏳ hazırlanacak
 | **09 Operasyon** | Ortamlar, CI/CD, yayın süreci, analytics planı | ⏳ |
 | **10 Proje** | Yol haritası, risk kaydı | ⏳ |
 | **Araştırma** | [Rakipler ve literatür (Excel)](research/Zindeo_Rakipler_ve_Literatur.xlsx) | ✅ |
-| **Ders** | [COMP 4910 PAF](course/COMP4910_PAF_Zindeo.docx) | ✅ |
+| **Ders** | [COMP 4910 PAF](moodle/ready-deliverables/Zindeo-PAF.docx) · [RSD v1.0](moodle/ready-deliverables/Zindeo-RSD-1.0.docx) | ✅ |
 
 ## Önerilen okuma sırası
 
